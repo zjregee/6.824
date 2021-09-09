@@ -1,0 +1,42 @@
+2021/08/14 11:17:15 RaftNode[0]start
+2021/08/14 11:17:15 RaftNode[1]start
+2021/08/14 11:17:15 RaftNode[2]start
+Test (2B): basic agreement ...
+2021/08/14 11:17:15 RaftNode[0] Follower -> Candidate
+2021/08/14 11:17:15 RaftNode[1] Follower -> Candidate
+2021/08/14 11:17:15 RaftNode[1] RequestVote starts, Term[1] LastLogIndex[0] LastLogTerm[0]
+2021/08/14 11:17:15 RaftNode[0] RequestVote starts, Term[1] LastLogIndex[0] LastLogTerm[0]
+2021/08/14 11:17:15 RaftNode[2] Follower -> Candidate
+2021/08/14 11:17:15 RaftNode[2] RequestVote starts, Term[1] LastLogIndex[0] LastLogTerm[0]
+2021/08/14 11:17:15 RaftNode[2] Handle RequestVote, CandidatesId[0] Term[1] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[2]
+2021/08/14 11:17:15 RaftNode[2] Return RequestVote, CandidatesId[0] VoteGranted[false] 
+2021/08/14 11:17:15 RaftNode[1] Handle RequestVote, CandidatesId[0] Term[1] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[1]
+2021/08/14 11:17:15 RaftNode[1] Return RequestVote, CandidatesId[0] VoteGranted[false] 
+2021/08/14 11:17:15 RaftNode[0] Handle RequestVote, CandidatesId[1] Term[1] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[0]
+2021/08/14 11:17:15 RaftNode[0] Return RequestVote, CandidatesId[1] VoteGranted[false] 
+2021/08/14 11:17:15 RaftNode[1] Handle RequestVote, CandidatesId[2] Term[1] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[1]
+2021/08/14 11:17:15 RaftNode[1] Return RequestVote, CandidatesId[2] VoteGranted[false] 
+2021/08/14 11:17:15 RaftNode[0] RequestVote ends, finishCount[3] voteCount[1] Role[Candidates] maxTerm[1] currentTerm[1]
+2021/08/14 11:17:15 RaftNode[2] Handle RequestVote, CandidatesId[1] Term[1] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[2]
+2021/08/14 11:17:15 RaftNode[0] Handle RequestVote, CandidatesId[2] Term[1] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[0]
+2021/08/14 11:17:15 RaftNode[2] Return RequestVote, CandidatesId[1] VoteGranted[false] 
+2021/08/14 11:17:15 RaftNode[0] Return RequestVote, CandidatesId[2] VoteGranted[false] 
+2021/08/14 11:17:15 RaftNode[1] RequestVote ends, finishCount[3] voteCount[1] Role[Candidates] maxTerm[1] currentTerm[1]
+2021/08/14 11:17:15 RaftNode[2] RequestVote ends, finishCount[3] voteCount[1] Role[Candidates] maxTerm[1] currentTerm[1]
+2021/08/14 11:17:15 RaftNode[1] RequestVote starts, Term[2] LastLogIndex[0] LastLogTerm[0]
+2021/08/14 11:17:15 RaftNode[0] Handle RequestVote, CandidatesId[1] Term[2] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[0]
+2021/08/14 11:17:15 RaftNode[0] Return RequestVote, CandidatesId[1] VoteGranted[true] 
+2021/08/14 11:17:15 RaftNode[2] Handle RequestVote, CandidatesId[1] Term[2] CurrentTerm[1] LastLogIndex[0] LastLogTerm[0] votedFor[2]
+2021/08/14 11:17:15 RaftNode[2] Return RequestVote, CandidatesId[1] VoteGranted[true] 
+2021/08/14 11:17:15 RaftNode[1] RequestVote ends, finishCount[2] voteCount[2] Role[Leader] maxTerm[1] currentTerm[2]
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 11 [running]:
+6.824/raft.(*Raft).appendEntriesLoop.func1(0xc0001640f0)
+	/Users/yurunjie/Desktop/6.824/src/raft/raft.go:551 +0xe50
+6.824/raft.(*Raft).appendEntriesLoop(0xc0001640f0)
+	/Users/yurunjie/Desktop/6.824/src/raft/raft.go:604 +0x48
+created by 6.824/raft.Make
+	/Users/yurunjie/Desktop/6.824/src/raft/raft.go:664 +0x287
+exit status 2
+FAIL	6.824/raft	1.032s
