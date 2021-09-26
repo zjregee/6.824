@@ -245,6 +245,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	rf.persist()
 }
 
+// ☑️
 func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply) {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
@@ -267,7 +268,8 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	if args.Term > rf.currentTerm {
 		rf.currentTerm = args.Term
 		rf.role = ROLE_FOLLOWER
-		rf.votedFor = args.LeaderId
+		rf.votedFor = -1
+		rf.leaderId = -1
 		rf.persist()
 	}
  
@@ -356,6 +358,7 @@ func (rf *Raft) sendAppendEntries(server int, args *AppendEntriesArgs, reply *Ap
 // term. the third return value is true if this server believes it is
 // the leader.
 //
+// ☑️
 func (rf *Raft) Start(command interface{}) (int, int, bool) {
 	index := -1
 	term := -1
@@ -410,7 +413,7 @@ func (rf *Raft) ticker() {
 		// Your code here to check if a leader election should
 		// be started and to randomize sleeping time using
 		// time.Sleep().
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond) // or 1
 
 		func() {
 			rf.mu.Lock()
@@ -418,6 +421,7 @@ func (rf *Raft) ticker() {
 
 			now := time.Now()
 			timeout := time.Duration((200+rand.Int31n(150))*int32(time.Millisecond))
+			// timeout := time.Duration(200+rand.Int32n(150)) * time.Millisecond
 			elapses := now.Sub(rf.lastActiveTime)
 			if rf.role == ROLE_FOLLOWER {
 				if elapses >= timeout {
@@ -431,6 +435,7 @@ func (rf *Raft) ticker() {
 
 				rf.currentTerm += 1
 				rf.votedFor = rf.me
+				rf.persist()
 
 				args := RequestVoteArgs {
 					Term: rf.currentTerm,
@@ -501,6 +506,7 @@ func (rf *Raft) ticker() {
 					rf.leaderId = -1
 					rf.currentTerm = maxTerm
 					rf.votedFor = -1
+					rf.persist()
 					return
 				}
 				if voteCount > len(rf.peers)/2 {
@@ -511,10 +517,10 @@ func (rf *Raft) ticker() {
 				}
 			}
 		}()
-
 	}
 }
 
+// ☑️
 func (rf *Raft) appendEntriesLoop() {
 	for !rf.killed() {
 		time.Sleep(10 * time.Millisecond)
@@ -592,11 +598,11 @@ func (rf *Raft) appendEntriesLoop() {
 							if newCommitIndex > rf.commitIndex && rf.log[newCommitIndex - 1].Term == rf.currentTerm {
 								rf.commitIndex = newCommitIndex
 							}
-						}
-					} else {
-						rf.nextIndex[id] -= -1
-						if rf.nextIndex[id] < 1 {
-							rf.nextIndex[id] = 1
+						} else {
+							rf.nextIndex[id] -= 1
+							if rf.nextIndex[id] < 1 {
+								rf.nextIndex[id] = 1
+							}
 						}
 					}
 				}(peerId, &args)
@@ -605,6 +611,7 @@ func (rf *Raft) appendEntriesLoop() {
 	}	
 }
 
+// ☑️
 func (rf *Raft) applyLogLoop(applyCh chan ApplyMsg) {
 	for !rf.killed() {
 		time.Sleep(10 * time.Millisecond)
@@ -643,6 +650,7 @@ func (rf *Raft) applyLogLoop(applyCh chan ApplyMsg) {
 // Make() must return quickly, so it should start goroutines
 // for any long-running work.
 //
+// ☑️
 func Make(peers []*labrpc.ClientEnd, me int,
 	persister *Persister, applyCh chan ApplyMsg) *Raft {
 	rf := &Raft{}
